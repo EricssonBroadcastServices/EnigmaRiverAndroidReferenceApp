@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">EnigmaRiverReferenceApp</string>
+    <string name="label_login">Login</string>
+    <string name="label_username">Username</string>
+    <string name="label_password">Password</string>
+    <string name="label_mfa_code">MFA Code</string>
+    
+    <string name="error_invalid_credentials">Sorry, can\'t log in with those credentials</string>
+    <string name="error_session_limit_exceeded">The user connected to the username have too many active sessions. Please sign out of a few and try again.</string>
+    <string name="error_device_limit_exceeded">Device limit reached. Please sign out of some device and try again.</string>
+    <string name="error_login_denied">Log in denied</string>
+    <string name="error_credentials">Something was wrong with your credentials.</string>
+    <string name="error_incorrect_configuration">Could not find backend resource. Please make sure your app is updated.</string>
+    <string name="error_unknown">Something went wrong</string>
+
+    <string name="app_error_no_asset_selected">No asset selected</string>
+
+    <string name="asset_error_invalid">Could not find asset</string>
+    <string name="asset_error_format">The asset is not available in any format compatible with your application</string>
+    <string name="asset_error_not_available_for_device">The asset is not available for your particular device</string>
+    <string name="asset_error_not_entitled">You don\'t have the required permissions to watch this asset</string>
+    <string name="asset_error_geo_block">The asset is not available in your region</string>
+    <string name="asset_error_restricted">The asset is not available for you</string>
+    <string name="asset_error_not_available">The asset is currently not available</string>
+
+    <string name="session_not_found">Please log in</string>
+</resources>

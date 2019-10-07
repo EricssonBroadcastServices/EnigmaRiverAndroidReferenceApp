@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.redbeemedia.enigma.referenceapp.ui.AudioTracksSpinner
+        android:id="@+id/audio_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/trackSpinner" />
+    <com.redbeemedia.enigma.referenceapp.ui.SubtitleTracksSpinner
+        android:id="@+id/subtitles_spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/trackSpinner"
+        />
+
+    <com.redbeemedia.enigma.referenceapp.ui.TimelineView
+        android:id="@+id/timelineView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.redbeemedia.enigma.referenceapp.ui.PlayPauseButton
+        android:id="@+id/play_pause_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/timelineView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@android:drawable/ic_media_play" />
+
+    <ImageButton
+        android:id="@+id/seek_back_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toTopOf="@+id/timelineView"
+        app:layout_constraintRight_toLeftOf="@id/play_pause_button"
+        android:layout_marginBottom="8dp"
+        android:src="@android:drawable/ic_media_rew" />
+
+    <ImageButton
+        android:id="@+id/seek_forward_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toTopOf="@+id/timelineView"
+        app:layout_constraintLeft_toRightOf="@id/play_pause_button"
+        android:layout_marginBottom="8dp"
+        android:src="@android:drawable/ic_media_ff" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

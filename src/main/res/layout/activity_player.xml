@@ -1,0 +1,18 @@
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true" />
+    <com.redbeemedia.enigma.referenceapp.ui.CustomControlsView
+        android:id="@+id/player_controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.redbeemedia.enigma.referenceapp.ui.AssetCoverView
+        android:id="@+id/assetCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>
