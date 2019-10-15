@@ -36,17 +36,17 @@ dependencies {
     if (findProject(':core') != null) {
         implementation project(":core")
     } else {
-        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroid:core:r1.0.28-BETA-3"
+        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroid:core:r1.0.28"
     }
     if(findProject(':exoplayerintegration') != null) {
         implementation project(":exoplayerintegration")
     } else {
-        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroidExoPlayerIntegration:r1.0.28-BETA-3"
+        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroidExoPlayerIntegration:r1.0.28"
     }
     if(findProject(':exposureUtils') != null) {
         implementation project(":exposureUtils")
     } else {
-        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroidExposureUtils:r1.0.28-BETA-3"
+        implementation "com.github.EricssonBroadcastServices:EnigmaRiverAndroidExposureUtils:r1.0.28"
     }
 
     implementation 'com.github.bumptech.glide:glide:4.9.0'
