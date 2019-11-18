@@ -7,14 +7,16 @@ import android.view.View;
 
 import androidx.appcompat.widget.AppCompatImageButton;
 
-import com.redbeemedia.enigma.core.player.EnigmaPlayerState;
-import com.redbeemedia.enigma.core.player.IEnigmaPlayer;
-import com.redbeemedia.enigma.core.player.listener.BaseEnigmaPlayerListener;
+import com.redbeemedia.enigma.core.virtualui.BaseVirtualButtonListener;
+import com.redbeemedia.enigma.core.virtualui.IVirtualButton;
+import com.redbeemedia.enigma.core.virtualui.IVirtualButtonListener;
+import com.redbeemedia.enigma.core.virtualui.IVirtualControls;
 
 public class PlayPauseButton extends AppCompatImageButton {
-    private IEnigmaPlayer enigmaPlayer;
     private Handler handler;
     private boolean usingPauseButton = false;
+    private IVirtualButton playButton;
+    private IVirtualButton pauseButton;
 
     public PlayPauseButton(Context context) {
         super(context);
@@ -34,36 +36,40 @@ public class PlayPauseButton extends AppCompatImageButton {
     protected void init() {
         this.handler = new Handler();
         updatePlayPauseButtonImage();
-    }
-
-    public void connectTo(IEnigmaPlayer enigmaPlayer){
-        this.enigmaPlayer = enigmaPlayer;
-        this.setOnClickListener(new OnClickListener() {
+        setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (usingPauseButton){
-                    enigmaPlayer.getControls().pause();
-                }else {
-                    enigmaPlayer.getControls().start();
+                if(playButton != null && pauseButton != null) {
+                    if(playButton.isEnabled()) {
+                        playButton.click();
+                    } else if(pauseButton.isEnabled()) {
+                        pauseButton.click();
+                    }
                 }
             }
         });
+    }
 
-        this.enigmaPlayer.addListener(new BaseEnigmaPlayerListener(){
+    public void connectTo(IVirtualControls virtualControls){
+        this.playButton = virtualControls.getPlay();
+        this.pauseButton = virtualControls.getPause();
+
+        IVirtualButtonListener virtualButtonChangedListener = new BaseVirtualButtonListener() {
             @Override
-            public void onStateChanged(EnigmaPlayerState from, EnigmaPlayerState to) {
-                if (to == EnigmaPlayerState.PLAYING){
-                    usingPauseButton = true;
-                    updatePlayPauseButtonImage();
-                } else if(from == EnigmaPlayerState.PLAYING){
-                    usingPauseButton = false;
-                    updatePlayPauseButtonImage();
-                }
+            public void onStateChanged() {
+                updatePlayPauseButtonImage();
+                boolean visible = playButton.isRelevant() || pauseButton.isRelevant();
+                setVisibility(visible ? VISIBLE : GONE);
             }
-        }, handler);
+        };
+        addOnAttachStateChangeListener(new VirtualButtonViewAttacher(playButton, virtualButtonChangedListener, handler));
+        addOnAttachStateChangeListener(new VirtualButtonViewAttacher(pauseButton, virtualButtonChangedListener, handler));
     }
 
     private void updatePlayPauseButtonImage() {
+        if(playButton != null && pauseButton != null) {
+            usingPauseButton = !playButton.isEnabled();
+        }
         int icon = usingPauseButton ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play;
         this.setImageResource(icon);
     }

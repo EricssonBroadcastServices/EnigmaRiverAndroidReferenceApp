@@ -46,7 +46,11 @@ public abstract class AbstractTracksSpinner<T> extends AppCompatSpinner {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(enigmaPlayer != null) {
-                    onSelected(enigmaPlayer, tracks.get(position).object);
+                    try {
+                        onSelected(enigmaPlayer, tracks.get(position).object);
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace(); //Log and ignore.
+                    }
                 }
             }
 
