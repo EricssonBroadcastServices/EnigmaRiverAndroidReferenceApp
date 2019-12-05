@@ -51,4 +51,23 @@
         android:layout_marginBottom="8dp"
         android:src="@android:drawable/ic_media_ff" />
 
+    <ImageButton
+        android:id="@+id/previous_program"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toTopOf="@+id/timelineView"
+        app:layout_constraintRight_toLeftOf="@id/seek_back_button"
+        android:layout_marginBottom="8dp"
+        android:src="@android:drawable/ic_media_previous" />
+
+    <ImageButton
+        android:id="@+id/next_program"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:src="@android:drawable/ic_media_next"
+        app:layout_constraintBottom_toTopOf="@+id/timelineView"
+        app:layout_constraintLeft_toRightOf="@id/seek_forward_button"
+         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

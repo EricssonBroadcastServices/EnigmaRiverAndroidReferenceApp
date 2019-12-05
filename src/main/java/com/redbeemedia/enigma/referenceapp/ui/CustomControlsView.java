@@ -69,6 +69,8 @@ public class CustomControlsView extends ConstraintLayout {
         playPauseButton.connectTo(virtualControls);
         connect(findViewById(R.id.seek_back_button), virtualControls.getRewind());
         connect(findViewById(R.id.seek_forward_button), virtualControls.getFastForward());
+        connect(findViewById(R.id.previous_program), virtualControls.getPreviousProgram());
+        connect(findViewById(R.id.next_program), virtualControls.getNextProgram());
 
         ((AbstractTracksSpinner) findViewById(R.id.audio_spinner)).connectTo(enigmaPlayer);
         ((AbstractTracksSpinner) findViewById(R.id.subtitles_spinner)).connectTo(enigmaPlayer);
