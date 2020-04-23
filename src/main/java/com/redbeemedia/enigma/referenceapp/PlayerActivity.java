@@ -27,6 +27,7 @@ import com.redbeemedia.enigma.core.playrequest.PlayRequest;
 import com.redbeemedia.enigma.core.playrequest.PlaybackProperties;
 import com.redbeemedia.enigma.core.session.ISession;
 import com.redbeemedia.enigma.exoplayerintegration.ExoPlayerTech;
+import com.redbeemedia.enigma.exoplayerintegration.drift.DriftCorrector;
 import com.redbeemedia.enigma.referenceapp.activityutil.ActivityConnector;
 import com.redbeemedia.enigma.referenceapp.activityutil.IActivityAction;
 import com.redbeemedia.enigma.referenceapp.activityutil.IActivityConnector;
@@ -52,6 +53,7 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
 
         ExoPlayerTech exoPlayerTech = new ExoPlayerTech(this, getString(R.string.app_name));
+        exoPlayerTech.addDriftListener(new DriftCorrector()); // For automatic drift correction
         exoPlayerTech.attachView(findViewById(R.id.player_view));
         exoPlayerTech.hideController();
 
