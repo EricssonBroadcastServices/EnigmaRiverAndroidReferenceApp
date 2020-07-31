@@ -2,6 +2,7 @@ package com.redbeemedia.enigma.referenceapp;
 
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.session.ISession;
+import com.redbeemedia.enigma.exposureutils.BaseExposureResultHandler;
 import com.redbeemedia.enigma.exposureutils.EnigmaExposure;
 import com.redbeemedia.enigma.exposureutils.FieldSet;
 import com.redbeemedia.enigma.exposureutils.GetAllAssetsRequest;
@@ -21,7 +22,7 @@ public class ExposureUtil {
             throw new IllegalArgumentException();
         }
         EnigmaExposure enigmaExposure = new EnigmaExposure(session);
-        GetAllAssetsRequest assetsRequest = new GetAllAssetsRequest(new IExposureResultHandler<ApiAssetList>() {
+        GetAllAssetsRequest assetsRequest = new GetAllAssetsRequest(new BaseExposureResultHandler<ApiAssetList>() {
             @Override
             public void onSuccess(ApiAssetList result) {
                 List<IAsset> assetList = new ArrayList<>();

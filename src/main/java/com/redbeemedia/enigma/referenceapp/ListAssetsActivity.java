@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.session.ISession;
-import com.redbeemedia.enigma.exposureutils.IExposureResultHandler;
+import com.redbeemedia.enigma.exposureutils.BaseExposureResultHandler;
 import com.redbeemedia.enigma.referenceapp.activityutil.ActivityConnector;
 import com.redbeemedia.enigma.referenceapp.activityutil.IActivityConnector;
 import com.redbeemedia.enigma.referenceapp.assets.IAsset;
@@ -50,7 +50,7 @@ public class ListAssetsActivity extends AppCompatActivity {
 
     private void updateAssets(ISession session) {
         if(session != null) {
-            ExposureUtil.getReferenceAppAssets(session, new IExposureResultHandler<List<IAsset>>() {
+            ExposureUtil.getReferenceAppAssets(session, new BaseExposureResultHandler<List<IAsset>>() {
                 @Override
                 public void onSuccess(List<IAsset> result) {
                     assets.postValue(result);
