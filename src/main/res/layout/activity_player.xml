@@ -1,12 +1,14 @@
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true" />
+        android:keepScreenOn="true"
+        app:controller_layout_id="@layout/exo_playback_control_view"/>
     <com.redbeemedia.enigma.referenceapp.ui.CustomControlsView
         android:id="@+id/player_controls"
         android:layout_width="match_parent"
