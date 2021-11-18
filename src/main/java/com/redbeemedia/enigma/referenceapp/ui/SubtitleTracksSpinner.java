@@ -31,7 +31,7 @@ public class SubtitleTracksSpinner extends AbstractTracksSpinner<ISubtitleTrack>
         return new ItemAdapter<ISubtitleTrack>(item) {
             @Override
             protected String getLabel(ISubtitleTrack obj) {
-                return obj != null ? obj.getLanguageCode() : "No subtitles";
+                return obj != null ? obj.getLabel() : "No subtitles";
             }
         };
     }
