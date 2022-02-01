@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.redbeemedia.enigma.referenceapp">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:name=".EnigmaRiverReferenceApp"
         android:allowBackup="true"
@@ -29,6 +34,10 @@
         <activity android:name=".ListAssetsActivity"
             android:screenOrientation="sensorPortrait"
             />
+
+        <service
+            android:name=".PlayerService" android:exported="false">
+        </service>
     </application>
 
 </manifest>

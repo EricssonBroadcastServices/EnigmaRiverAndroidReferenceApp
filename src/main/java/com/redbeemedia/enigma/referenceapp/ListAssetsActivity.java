@@ -1,9 +1,14 @@
 package com.redbeemedia.enigma.referenceapp;
 
+import static com.redbeemedia.enigma.core.player.EnigmaPlayerState.IDLE;
+import static com.redbeemedia.enigma.core.player.EnigmaPlayerState.PAUSED;
+
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -17,7 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.redbeemedia.enigma.core.error.EnigmaError;
+import com.redbeemedia.enigma.core.player.timeline.ITimelinePosition;
 import com.redbeemedia.enigma.core.session.ISession;
+import com.redbeemedia.enigma.core.time.Duration;
 import com.redbeemedia.enigma.exposureutils.BaseExposureResultHandler;
 import com.redbeemedia.enigma.referenceapp.activityutil.ActivityConnector;
 import com.redbeemedia.enigma.referenceapp.activityutil.IActivityConnector;
@@ -29,6 +36,7 @@ import java.util.List;
 
 public class ListAssetsActivity extends AppCompatActivity {
     private MutableLiveData<List<IAsset>> assets = new MutableLiveData<>();
+    private Duration CONTROL_INCREMENT = Duration.seconds(10);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,10 +54,78 @@ public class ListAssetsActivity extends AppCompatActivity {
         RecyclerView assetList = findViewById(R.id.asset_list);
         assetList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         assetList.setAdapter(new AssetListAdapter(this, assets, new ActivityConnector<>(this)));
+
+        setupStickyPlayerButtons();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            if (((EnigmaRiverReferenceApp) getApplication()).isStickyPlayer()) {
+                findViewById(R.id.player_scroll_view).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.player_scroll_view).setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    private void setupStickyPlayerButtons() {
+
+
+        Button playButton = findViewById(R.id.stickyPlayButton);
+        playButton.setOnClickListener(v -> {
+            if (PlayerService.getEnigmaPlayer().getState() == PAUSED
+                    || PlayerService.getEnigmaPlayer().getState() == IDLE) {
+                PlayerService.getEnigmaPlayer().getControls().start();
+                Button p1_button = findViewById(R.id.stickyPlayButton);
+                p1_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_styled_controls_pause, 0, 0, 0);
+
+            } else {
+                PlayerService.getEnigmaPlayer().getControls().pause();
+                Button p1_button = findViewById(R.id.stickyPlayButton);
+                p1_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exo_styled_controls_play, 0, 0, 0);
+            }
+        });
+
+        Button fwdButton = findViewById(R.id.stickyFwdButton);
+        fwdButton.setOnClickListener(v -> {
+            PlayerService.getEnigmaPlayer().getControls().pause();
+            ITimelinePosition currentPosition = PlayerService.getEnigmaPlayer().getTimeline().getCurrentPosition();
+            if (currentPosition != null) {
+                ITimelinePosition newPosition = currentPosition.add(CONTROL_INCREMENT);
+                ITimelinePosition endPosition = PlayerService.getEnigmaPlayer().getTimeline().getCurrentEndBound();
+                if (newPosition.after(endPosition)) {
+                    newPosition = endPosition;
+                }
+                PlayerService.getEnigmaPlayer().getControls().seekTo(newPosition);
+                PlayerService.getEnigmaPlayer().getControls().start();
+            }
+        });
+
+        Button rwdButton = findViewById(R.id.stickyRwdButton);
+        rwdButton.setOnClickListener(v -> {
+            PlayerService.getEnigmaPlayer().getControls().pause();
+            ITimelinePosition currentPosition = PlayerService.getEnigmaPlayer().getTimeline().getCurrentPosition();
+            if (currentPosition != null) {
+                ITimelinePosition newPosition = currentPosition.subtract(CONTROL_INCREMENT);
+                ITimelinePosition startPosition = PlayerService.getEnigmaPlayer().getTimeline().getCurrentStartBound();
+                if (newPosition.before(startPosition)) {
+                    newPosition = startPosition;
+                }
+                PlayerService.getEnigmaPlayer().getControls().seekTo(newPosition);
+                PlayerService.getEnigmaPlayer().getControls().start();
+            }
+        });
     }
 
     private void updateAssets(ISession session) {
-        if(session != null) {
+        if (session != null) {
             ExposureUtil.getReferenceAppAssets(session, new BaseExposureResultHandler<List<IAsset>>() {
                 @Override
                 public void onSuccess(List<IAsset> result) {
@@ -108,7 +184,7 @@ public class ListAssetsActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull AssetViewHolder holder, int position) {
-            if(currentAssetList != null) {
+            if (currentAssetList != null) {
                 IAsset asset = currentAssetList.get(position);
                 holder.bind(asset);
             }

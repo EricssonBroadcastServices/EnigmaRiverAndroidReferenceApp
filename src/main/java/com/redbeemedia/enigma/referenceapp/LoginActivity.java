@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.redbeemedia.enigma.core.businessunit.BusinessUnit;
+import com.redbeemedia.enigma.core.context.EnigmaRiverContext;
 import com.redbeemedia.enigma.core.error.CredentialsError;
 import com.redbeemedia.enigma.core.error.DeviceLimitReachedError;
 import com.redbeemedia.enigma.core.error.EnigmaError;
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private EnigmaLogin enigmaLogin;
     private boolean waitingForLogin = false;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +43,27 @@ public class LoginActivity extends AppCompatActivity {
         SessionContainer.setSession(null);
 
         this.handler = new Handler();
-        this.enigmaLogin = new EnigmaLogin(EnigmaRiverReferenceApp.BUSINESS_UNIT);
-        this.enigmaLogin.setCallbackHandler(handler);
+
 
         Button button = findViewById(R.id.button_login);
         EditText usernameField = findViewById(R.id.edit_login_username);
         EditText passwordField = findViewById(R.id.edit_login_password);
+        EditText baseUrlField = findViewById(R.id.edit_login_base_url);
+        EditText cubuField = findViewById(R.id.edit_login_cu_bu);
 
         button.setOnClickListener(view -> {
-            if(!waitingForLogin) {
+            if (!waitingForLogin) {
+
+                EnigmaRiverReferenceApp.BASE_URL = baseUrlField.getText().toString();
+                EnigmaRiverReferenceApp.ReferenceAppInitialization initialization = new EnigmaRiverReferenceApp.ReferenceAppInitialization();
+                EnigmaRiverContext.initialize(getApplication(), initialization);
+
+
+                System.out.println(cubuField.getText().toString());
+                String[] split = cubuField.getText().toString().split("/");
+                EnigmaRiverReferenceApp.BUSINESS_UNIT = new BusinessUnit(split[0], split[1]);
+                enigmaLogin = new EnigmaLogin(EnigmaRiverReferenceApp.BUSINESS_UNIT);
+                this.enigmaLogin.setCallbackHandler(handler);
                 UserLoginRequest userLoginRequest = new UserLoginRequest(usernameField.getText().toString(), passwordField.getText().toString(), loginResultHandler);
                 waitingForLogin = true;
                 enigmaLogin.login(userLoginRequest);
@@ -58,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLoginSuccess(ISession session) {
         SessionContainer.setSession(session);
-        if(waitingForLogin) {
+        if (waitingForLogin) {
             startActivity(new Intent(this, ListAssetsActivity.class));
             waitingForLogin = false;
         }
@@ -72,19 +87,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private String getErrorForUser(EnigmaError error) {
-        if(error instanceof InvalidCredentialsError) {
+        if (error instanceof InvalidCredentialsError) {
             return getString(R.string.error_invalid_credentials);
-        } else if(error instanceof SessionLimitExceededError) {
+        } else if (error instanceof SessionLimitExceededError) {
             return getString(R.string.error_session_limit_exceeded);
-        } else if(error instanceof DeviceLimitReachedError) {
+        } else if (error instanceof DeviceLimitReachedError) {
             return getString(R.string.error_device_limit_exceeded);
-        } else if(error instanceof HttpResourceNotFoundError) {
+        } else if (error instanceof HttpResourceNotFoundError) {
             return getString(R.string.error_incorrect_configuration);
-        } else if(error instanceof UnknownBusinessUnitError) {
+        } else if (error instanceof UnknownBusinessUnitError) {
             return getString(R.string.error_incorrect_configuration);
-        } else if(error instanceof LoginDeniedError) {
+        } else if (error instanceof LoginDeniedError) {
             return getString(R.string.error_login_denied);
-        } else if(error instanceof CredentialsError) {
+        } else if (error instanceof CredentialsError) {
             return getString(R.string.error_credentials);
         } else {
             return getString(R.string.error_unknown);
@@ -93,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static class LoginResultHandler implements ILoginResultHandler {
         private WeakReference<LoginActivity> activityReference;
+
         public LoginResultHandler(LoginActivity activity) {
             activityReference = new WeakReference<>(activity);
         }
@@ -100,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSuccess(ISession session) {
             LoginActivity activity = activityReference.get();
-            if(activity != null) {
+            if (activity != null) {
                 activity.onLoginSuccess(session);
             }
         }
@@ -108,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onError(EnigmaError error) {
             LoginActivity activity = activityReference.get();
-            if(activity != null) {
+            if (activity != null) {
                 activity.onLoginError(error);
             }
         }

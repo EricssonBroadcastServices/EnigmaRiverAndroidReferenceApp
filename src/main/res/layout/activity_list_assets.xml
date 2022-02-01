@@ -1,20 +1,73 @@
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-   <ScrollView
-       android:layout_width="wrap_content"
-       android:layout_height="match_parent"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.5"
-       app:layout_constraintStart_toStartOf="parent">
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/asset_list"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          >
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-      </androidx.recyclerview.widget.RecyclerView>
-   </ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/asset_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/player_scroll_view"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:background="@color/activityBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/stickyRwdButton"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:background="@color/cardview_shadow_start_color"
+                android:drawableStart="@drawable/exo_controls_rewind"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/stickyPlayButton"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:background="@color/cardview_shadow_start_color"
+                android:drawableStart="@drawable/exo_styled_controls_pause"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/stickyFwdButton"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:background="@color/cardview_shadow_start_color"
+                android:drawableStart="@drawable/exo_controls_fastforward"
+                android:textColor="#000000" />
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

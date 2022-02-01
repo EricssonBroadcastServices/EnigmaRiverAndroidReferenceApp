@@ -38,7 +38,7 @@ public class ExposureUtil {
             }
         });
         assetsRequest.setFieldSet(FieldSet.ALL);
-        assetsRequest.setQuery("tags.other:enigma-android-ref-app_5417D6");
+        //assetsRequest.setQuery("tags.other:enigma-android-ref-app_5417D6");
         assetsRequest.setPageSize(maxResults);
 
         enigmaExposure.doRequest(assetsRequest);

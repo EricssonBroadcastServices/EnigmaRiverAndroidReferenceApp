@@ -2,6 +2,8 @@
     <string name="app_name">EnigmaRiverReferenceApp</string>
     <string name="label_login">Login</string>
     <string name="label_username">Username</string>
+    <string name="label_base_url">Base Url</string>
+    <string name="label_cu_bu">CU/BU</string>
     <string name="label_password">Password</string>
     <string name="label_mfa_code">MFA Code</string>
     
