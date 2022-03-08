@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".LoginActivity"
+            android:exported="true"
             android:screenOrientation="sensorPortrait"
             >
             <intent-filter>
