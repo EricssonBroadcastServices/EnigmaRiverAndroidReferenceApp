@@ -1,15 +1,20 @@
 package com.redbeemedia.enigma.referenceapp;
 
+import static com.google.android.exoplayer2.ui.CaptionStyleCompat.DEFAULT;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.Dimension;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.redbeemedia.enigma.core.error.AssetFormatError;
 import com.redbeemedia.enigma.core.error.AssetGeoBlockedError;
 import com.redbeemedia.enigma.core.error.AssetNotAvailableError;
@@ -118,6 +123,14 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        CaptionStyleCompat captionStyleCompat = new CaptionStyleCompat(DEFAULT.foregroundColor,
+                Color.BLUE,
+                DEFAULT.windowColor,
+                DEFAULT.edgeType,
+                DEFAULT.edgeColor,
+                DEFAULT.typeface);
+        enigmaPlayer.getPlayerSubtitleView().setStyle(captionStyleCompat);
+        enigmaPlayer.getPlayerSubtitleView().setFixedTextSize(Dimension.PX,30);
         enigmaPlayer.getControls().start(new ContinueStreamResultHandler(new ActivityConnector<>(this)));
     }
 
@@ -127,8 +140,9 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void onPlayRequestError(EnigmaError error) {
         String errorMessage = getErrorForUser(error);
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
         error.printStackTrace();
+        PlayerActivity object = this;
+        this.runOnUiThread(() -> Toast.makeText(object, errorMessage, Toast.LENGTH_LONG).show());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

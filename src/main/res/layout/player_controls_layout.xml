@@ -10,6 +10,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         style="@style/trackSpinner" />
+    <com.redbeemedia.enigma.referenceapp.ui.VideoTracksSpinner
+        android:id="@+id/video_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/trackSpinner" />
     <com.redbeemedia.enigma.referenceapp.ui.SubtitleTracksSpinner
         android:id="@+id/subtitles_spinner"
         app:layout_constraintStart_toStartOf="parent"

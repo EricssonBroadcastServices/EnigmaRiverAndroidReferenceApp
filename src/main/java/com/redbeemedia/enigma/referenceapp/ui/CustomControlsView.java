@@ -74,6 +74,7 @@ public class CustomControlsView extends ConstraintLayout {
 
         ((AbstractTracksSpinner) findViewById(R.id.audio_spinner)).connectTo(enigmaPlayer);
         ((AbstractTracksSpinner) findViewById(R.id.subtitles_spinner)).connectTo(enigmaPlayer);
+        ((AbstractTracksSpinner) findViewById(R.id.video_spinner)).connectTo(enigmaPlayer);
     }
 
     private void connect(View view, IVirtualButton virtualButton) {
