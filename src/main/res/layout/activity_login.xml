@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_base_url"
+            android:text="https://wl.enigmatv.io"
             android:inputType="textAutoComplete"
             android:padding="@dimen/padding_small" />
     </com.google.android.material.textfield.TextInputLayout>

@@ -7,14 +7,27 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.Menu;
 import android.widget.Toast;
 
-import androidx.annotation.Dimension;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
+import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.redbeemedia.enigma.cast.listeners.BaseEnigmaCastManagerListener;
+import com.redbeemedia.enigma.cast.manager.EnigmaCastManager;
+import com.redbeemedia.enigma.cast.manager.IEnigmaCastManager;
+import com.redbeemedia.enigma.cast.request.EnigmaCastPlaybackProperties;
+import com.redbeemedia.enigma.cast.request.EnigmaCastRequest;
+import com.redbeemedia.enigma.cast.request.IEnigmaCastRequest;
+import com.redbeemedia.enigma.cast.resulthandler.BaseEnigmaCastResultHandler;
+import com.redbeemedia.enigma.cast.session.IEnigmaCastSession;
 import com.redbeemedia.enigma.core.error.AssetFormatError;
 import com.redbeemedia.enigma.core.error.AssetGeoBlockedError;
 import com.redbeemedia.enigma.core.error.AssetNotAvailableError;
@@ -22,7 +35,9 @@ import com.redbeemedia.enigma.core.error.AssetNotAvailableForDeviceError;
 import com.redbeemedia.enigma.core.error.AssetRestrictedError;
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.error.InvalidAssetError;
+import com.redbeemedia.enigma.core.error.NoInternetConnectionError;
 import com.redbeemedia.enigma.core.error.NotEntitledToAssetError;
+import com.redbeemedia.enigma.core.playable.AssetPlayable;
 import com.redbeemedia.enigma.core.playbacksession.IPlaybackSession;
 import com.redbeemedia.enigma.core.player.EnigmaPlayer;
 import com.redbeemedia.enigma.core.player.EnigmaPlayerState;
@@ -34,6 +49,7 @@ import com.redbeemedia.enigma.core.playrequest.IPlaybackProperties;
 import com.redbeemedia.enigma.core.playrequest.PlayRequest;
 import com.redbeemedia.enigma.core.playrequest.PlaybackProperties;
 import com.redbeemedia.enigma.core.session.ISession;
+import com.redbeemedia.enigma.core.util.AndroidThreadUtil;
 import com.redbeemedia.enigma.exoplayerintegration.ExoPlayerTech;
 import com.redbeemedia.enigma.exoplayerintegration.drift.DriftCorrector;
 import com.redbeemedia.enigma.referenceapp.activityutil.ActivityConnector;
@@ -52,11 +68,23 @@ public class PlayerActivity extends AppCompatActivity {
     private ExoPlayerTech exoPlayerTech;
     private IAsset asset;
     private boolean startedAtLeastOnce = false;
+    private IEnigmaCastManager enigmaCastManager;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item);
+        return true;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        // cast
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         exoPlayerTech = new ExoPlayerTech(this, getString(R.string.app_name));
         exoPlayerTech.addDriftListener(new DriftCorrector()); // For automatic drift correction
@@ -98,7 +126,40 @@ public class PlayerActivity extends AppCompatActivity {
 
         CustomControlsView customControlsView = findViewById(R.id.player_controls);
         customControlsView.connectTo(enigmaPlayer);
+        enigmaCastManager = EnigmaCastManager.getSharedInstance(getApplicationContext());
+        enigmaCastManager.addListener(new BaseEnigmaCastManagerListener() {
+            @Override
+            public void onCastSessionChanged(@Nullable IEnigmaCastSession oldSession, @Nullable IEnigmaCastSession newSession) {
+                playToChromecast(session);
+            }
+        }, new Handler(Looper.getMainLooper()));
     }
+
+
+    private void playToChromecast(ISession session) {
+        EnigmaCastPlaybackProperties playbackProperties = new EnigmaCastPlaybackProperties.Builder().build();
+        AssetPlayable assetPlayable = (AssetPlayable)asset.getPlayable();
+        IEnigmaCastRequest castRequest =
+                new EnigmaCastRequest.Builder(assetPlayable.getAssetId(), session)
+                        .setPlaybackProperties(playbackProperties)
+                        .build();
+        AndroidThreadUtil.runOnUiThread(() -> {
+            enigmaCastManager.play(
+                    castRequest, new BaseEnigmaCastResultHandler() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d("Cast","Asset cast success");
+                        }
+                        @Override
+                        public void onException(Exception e) {
+                            e.printStackTrace();
+                            Log.e("Cast","Asset cast error",e);
+                        }
+                    },
+                    new Handler(Looper.getMainLooper()));
+        });
+    }
+
 
     private void startStream() {
         PlaybackProperties playbackProperties = new PlaybackProperties();
@@ -129,8 +190,8 @@ public class PlayerActivity extends AppCompatActivity {
                 DEFAULT.edgeType,
                 DEFAULT.edgeColor,
                 DEFAULT.typeface);
-        enigmaPlayer.getPlayerSubtitleView().setStyle(captionStyleCompat);
-        enigmaPlayer.getPlayerSubtitleView().setFixedTextSize(Dimension.PX,30);
+        //enigmaPlayer.getPlayerSubtitleView().setStyle(captionStyleCompat);
+        //enigmaPlayer.getPlayerSubtitleView().setFixedTextSize(Dimension.PX,30);
         enigmaPlayer.getControls().start(new ContinueStreamResultHandler(new ActivityConnector<>(this)));
     }
 
@@ -178,6 +239,8 @@ public class PlayerActivity extends AppCompatActivity {
             return getString(R.string.asset_error_restricted);
         } else if (error instanceof AssetNotAvailableError) {
             return getString(R.string.asset_error_not_available);
+        }  else if (error instanceof NoInternetConnectionError) {
+            return "Network fault, check your internet";
         } else {
             return getString(R.string.error_unknown);
         }

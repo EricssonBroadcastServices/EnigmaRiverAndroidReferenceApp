@@ -6,6 +6,8 @@ import static com.redbeemedia.enigma.core.player.EnigmaPlayerState.PAUSED;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +16,7 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +24,8 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.redbeemedia.enigma.cast.manager.EnigmaCastManager;
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.player.timeline.ITimelinePosition;
 import com.redbeemedia.enigma.core.session.ISession;
@@ -33,16 +38,29 @@ import com.redbeemedia.enigma.referenceapp.session.SessionContainer;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.gms.cast.framework.CastContext;
 
 public class ListAssetsActivity extends AppCompatActivity {
     private MutableLiveData<List<IAsset>> assets = new MutableLiveData<>();
     private Duration CONTROL_INCREMENT = Duration.seconds(10);
+    private CastContext mCastContext;
+
+
+    // for cast
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item);
+        return true;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_assets);
-
+        // for cast
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         LiveData<ISession> sessionLiveData = SessionContainer.getSession();
         updateAssets(sessionLiveData.getValue());
         sessionLiveData.observe(this, new Observer<ISession>() {
@@ -54,7 +72,7 @@ public class ListAssetsActivity extends AppCompatActivity {
         RecyclerView assetList = findViewById(R.id.asset_list);
         assetList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         assetList.setAdapter(new AssetListAdapter(this, assets, new ActivityConnector<>(this)));
-
+        EnigmaCastManager.getSharedInstance(getApplicationContext());
         setupStickyPlayerButtons();
     }
 
@@ -129,7 +147,7 @@ public class ListAssetsActivity extends AppCompatActivity {
             ExposureUtil.getReferenceAppAssets(session, new BaseExposureResultHandler<List<IAsset>>() {
                 @Override
                 public void onSuccess(List<IAsset> result) {
-                    assets.postValue(result);
+                   assets.postValue(result);
                 }
 
                 @Override
