@@ -8,12 +8,16 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.google.android.exoplayer2.metadata.Metadata;
+import com.google.android.exoplayer2.metadata.emsg.EventMessage;
+import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist;
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.player.IEnigmaPlayer;
 import com.redbeemedia.enigma.core.player.controls.IControlResultHandler;
@@ -24,6 +28,7 @@ import com.redbeemedia.enigma.core.player.timeline.TimelinePositionFormat;
 import com.redbeemedia.enigma.core.time.Duration;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class TimelineView extends View {
     private static final TimelinePositionFormat timelinePositionFormat = TimelinePositionFormat.newFormat("${minutes}m${sec}s", new SimpleDateFormat("hh:mm:ss a"));
@@ -145,6 +150,26 @@ public class TimelineView extends View {
                 TimelineView.this.start = start;
                 TimelineView.this.end = end;
                 recalculatePos();
+            }
+
+            @Override
+            public void onDashMetadata(Metadata metadata) {
+                // handle meta data event
+                for (int i = 0; i < metadata.length(); i++) {
+                    Metadata.Entry entry = metadata.get(i);
+                    byte[] messageData = ((EventMessage) (entry)).messageData;
+                    Log.d("Metadata-Stream", new String(messageData));
+                }
+            }
+
+            @Override
+            public void onHlsMetadata(HlsMediaPlaylist metadata) {
+                for (String tag : metadata.tags) {
+                    if (tag.toLowerCase(Locale.ROOT).contains("X-COM-DAICONNECT-TRACK".toLowerCase(Locale.ROOT))) {
+                        // We only interested in DAICONNECT-TRACK
+                        Log.d("Metadata-Stream", tag);
+                    }
+                }
             }
         }, handler);
     }

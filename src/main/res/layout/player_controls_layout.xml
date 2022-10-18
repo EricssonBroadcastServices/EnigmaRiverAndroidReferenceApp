@@ -5,17 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:background="@color/cast_expanded_controller_live_indicator_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:menu="@menu/top_menu"  />
-
     <com.redbeemedia.enigma.referenceapp.ui.AudioTracksSpinner
         android:id="@+id/audio_spinner"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/video_spinner"
         app:layout_constraintTop_toTopOf="parent"
         style="@style/trackSpinner" />
     <com.redbeemedia.enigma.referenceapp.ui.VideoTracksSpinner
