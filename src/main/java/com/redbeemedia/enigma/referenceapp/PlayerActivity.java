@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -133,6 +134,9 @@ public class PlayerActivity extends AppCompatActivity {
                 playToChromecast(session);
             }
         }, new Handler(Looper.getMainLooper()));
+
+        MediaSessionCompat mediaSession = exoPlayerTech.createMediaSession(getApplicationContext());
+        mediaSession.setActive(true);
     }
 
 
