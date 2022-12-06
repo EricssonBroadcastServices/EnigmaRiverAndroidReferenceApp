@@ -157,8 +157,7 @@ public class TimelineView extends View {
                 // handle meta data event
                 for (int i = 0; i < metadata.length(); i++) {
                     Metadata.Entry entry = metadata.get(i);
-                    byte[] messageData = ((EventMessage) (entry)).messageData;
-                    Log.d("Metadata-Stream", new String(messageData));
+
                 }
             }
 

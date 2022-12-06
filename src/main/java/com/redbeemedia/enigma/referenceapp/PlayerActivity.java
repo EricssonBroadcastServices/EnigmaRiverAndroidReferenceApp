@@ -5,6 +5,9 @@ import static com.google.android.exoplayer2.ui.CaptionStyleCompat.DEFAULT;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,8 +22,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.mux.stats.sdk.core.model.CustomerData;
+import com.mux.stats.sdk.core.model.CustomerPlayerData;
+import com.mux.stats.sdk.core.model.CustomerVideoData;
+import com.mux.stats.sdk.muxstats.MuxStatsExoPlayer;
 import com.redbeemedia.enigma.cast.listeners.BaseEnigmaCastManagerListener;
 import com.redbeemedia.enigma.cast.manager.EnigmaCastManager;
 import com.redbeemedia.enigma.cast.manager.IEnigmaCastManager;
@@ -79,6 +87,7 @@ public class PlayerActivity extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +96,7 @@ public class PlayerActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        exoPlayerTech = new ExoPlayerTech(this, getString(R.string.app_name));
+       exoPlayerTech = new ExoPlayerTech(this, getString(R.string.app_name));
         exoPlayerTech.addDriftListener(new DriftCorrector()); // For automatic drift correction
         exoPlayerTech.attachView(findViewById(R.id.player_view));
         exoPlayerTech.hideController();
@@ -137,7 +146,75 @@ public class PlayerActivity extends AppCompatActivity {
 
         MediaSessionCompat mediaSession = exoPlayerTech.createMediaSession(getApplicationContext());
         mediaSession.setActive(true);
+
+        handleMultiMedia();
+
+        // Mux integration
+        //muxIntegration();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void handleMultiMedia() {
+        // implementing OnAudioFocusChangeListener to react to focus changes
+        AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
+            System.out.println(focusChange);
+
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    System.out.println("here 1 AUDIOFOCUS_GAIN");
+                    enigmaPlayer.getControls().start();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    System.out.println("here 1 AUDIOFOCUS_LOSS");
+
+                    enigmaPlayer.getControls().pause();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    System.out.println("here 1 AUDIOFOCUS_LOSS_TRANSIENT");
+
+                    enigmaPlayer.getControls().pause();
+
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    System.out.println("here 1 AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+
+                    enigmaPlayer.getControls().pause();
+                    break;
+            }
+        };
+
+        // initializing variables for audio focus and playback management
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        AudioFocusRequest focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes)
+                .setOnAudioFocusChangeListener(onAudioFocusChangeListener)
+                .setAcceptsDelayedFocusGain(true)
+                .build();
+        final Object focusLock = new Object();
+
+        boolean playbackDelayed = false;
+        boolean playbackNowAuthorized = false;
+
+
+        // requesting audio focus and processing the response
+        int res = audioManager.requestAudioFocus(focusRequest);
+        synchronized (focusLock) {
+            if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                playbackNowAuthorized = false;
+            } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                playbackNowAuthorized = true;
+                enigmaPlayer.getControls().start();
+            } else if (res == AudioManager.AUDIOFOCUS_REQUEST_DELAYED) {
+                playbackDelayed = true;
+                playbackNowAuthorized = false;
+            }
+        }
+    }
+
 
 
     private void playToChromecast(ISession session) {
@@ -243,7 +320,7 @@ public class PlayerActivity extends AppCompatActivity {
             return getString(R.string.asset_error_restricted);
         } else if (error instanceof AssetNotAvailableError) {
             return getString(R.string.asset_error_not_available);
-        }  else if (error instanceof NoInternetConnectionError) {
+        } else if (error instanceof NoInternetConnectionError) {
             return "Network fault, check your internet";
         } else {
             return getString(R.string.error_unknown);
