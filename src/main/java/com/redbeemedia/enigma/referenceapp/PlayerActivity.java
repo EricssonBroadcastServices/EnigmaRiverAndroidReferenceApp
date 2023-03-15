@@ -22,13 +22,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.gms.cast.framework.CastButtonFactory;
-import com.mux.stats.sdk.core.model.CustomerData;
-import com.mux.stats.sdk.core.model.CustomerPlayerData;
-import com.mux.stats.sdk.core.model.CustomerVideoData;
-import com.mux.stats.sdk.muxstats.MuxStatsExoPlayer;
 import com.redbeemedia.enigma.cast.listeners.BaseEnigmaCastManagerListener;
 import com.redbeemedia.enigma.cast.manager.EnigmaCastManager;
 import com.redbeemedia.enigma.cast.manager.IEnigmaCastManager;
@@ -66,12 +61,14 @@ import com.redbeemedia.enigma.referenceapp.activityutil.IActivityAction;
 import com.redbeemedia.enigma.referenceapp.activityutil.IActivityConnector;
 import com.redbeemedia.enigma.referenceapp.assets.AssetMarshaller;
 import com.redbeemedia.enigma.referenceapp.assets.IAsset;
+import com.redbeemedia.enigma.referenceapp.cast.ExpandedControlActivity;
 import com.redbeemedia.enigma.referenceapp.session.SessionContainer;
 import com.redbeemedia.enigma.referenceapp.ui.AssetCoverView;
 import com.redbeemedia.enigma.referenceapp.ui.CustomControlsView;
 
 public class PlayerActivity extends AppCompatActivity {
     private static final String EXTRA_ASSET = "asset";
+    public static final String DUMMY_ALBUM_ART_URL = "https://avatars.githubusercontent.com/u/8594775?v=4";
 
     private IEnigmaPlayer enigmaPlayer;
     private ExoPlayerTech exoPlayerTech;
@@ -216,7 +213,6 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
 
-
     private void playToChromecast(ISession session) {
         EnigmaCastPlaybackProperties playbackProperties = new EnigmaCastPlaybackProperties.Builder().build();
         AssetPlayable assetPlayable = (AssetPlayable)asset.getPlayable();
@@ -229,8 +225,14 @@ public class PlayerActivity extends AppCompatActivity {
                     castRequest, new BaseEnigmaCastResultHandler() {
                         @Override
                         public void onSuccess() {
-                            Log.d("Cast","Asset cast success");
+                            Log.d("Cast", "Asset cast success");
+                            // set custom image to be shown in cast sender UI
+                            ExpandedControlActivity.CAST_ALBUM_ART_THUMBNAIL_URL = DUMMY_ALBUM_ART_URL;
+                            Intent intent = new Intent(PlayerActivity.this, ExpandedControlActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
+
                         @Override
                         public void onException(Exception e) {
                             e.printStackTrace();

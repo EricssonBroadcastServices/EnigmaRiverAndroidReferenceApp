@@ -21,12 +21,11 @@
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.redbeemedia.enigma.cast.optionsprovider.EnigmaCastOptionsProvider" />
+            android:value="com.redbeemedia.enigma.referenceapp.cast.ReferenceAppCastProvider" />
 
         <activity android:name=".LoginActivity"
             android:exported="true"
-            android:screenOrientation="sensorPortrait"
-            >
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,12 +33,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlayerActivity"
-            android:theme="@style/AppTheme.Player"
             android:screenOrientation="sensorLandscape"
-            />
+            android:theme="@style/AppTheme.Player" />
         <activity android:name=".ListAssetsActivity"
-            android:screenOrientation="sensorPortrait"
-            />
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name="com.redbeemedia.enigma.referenceapp.cast.ExpandedControlActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            tools:node="merge">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.redbeemedia.enigma.referenceapp.PlayerActivity" />
+        </activity>
 
         <service
             android:name=".PlayerService" android:exported="false">
