@@ -80,10 +80,12 @@
                 android:textColor="#000000" />
         </LinearLayout>
     </ScrollView>
+    <!---
     <ScrollView
         android:id="@+id/player_cast_scroll_view"
         android:layout_width="240dp"
         android:layout_height="50dp"
+        android:visibility="gone"
         android:background="@color/activityBackground"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent">
@@ -103,6 +105,6 @@
         </LinearLayout>
 
     </ScrollView>
-
+-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

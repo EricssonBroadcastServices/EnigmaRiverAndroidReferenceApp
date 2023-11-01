@@ -3,7 +3,6 @@ package com.redbeemedia.enigma.referenceapp.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.redbeemedia.enigma.core.audio.IAudioTrack;
 import com.redbeemedia.enigma.core.playbacksession.BasePlaybackSessionListener;
 import com.redbeemedia.enigma.core.playbacksession.IPlaybackSession;
 import com.redbeemedia.enigma.core.playbacksession.IPlaybackSessionListener;

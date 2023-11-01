@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_base_url"
-            android:text="https://wl.enigmatv.io"
+            android:text="https://exposure.api.redbee.live"
             android:inputType="textAutoComplete"
             android:padding="@dimen/padding_small" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -56,6 +56,7 @@
             android:id="@+id/edit_login_cu_bu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="RTBF/Auvio"
             android:hint="@string/label_cu_bu"
             android:inputType="textAutoComplete"
             android:padding="@dimen/padding_small" />
@@ -78,6 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_username"
+            android:text="ramanjot.kaur@eyevinn.se"
+
             android:inputType="textEmailAddress|textAutoComplete"
             android:padding="@dimen/padding_small" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -99,6 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_password"
+            android:text="Nbqkioc@1984"
             android:inputType="textPassword"
             android:padding="@dimen/padding_small" />
     </com.google.android.material.textfield.TextInputLayout>

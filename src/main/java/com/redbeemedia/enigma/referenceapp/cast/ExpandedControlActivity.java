@@ -2,13 +2,10 @@ package com.redbeemedia.enigma.referenceapp.cast;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.cast.framework.CastButtonFactory;
-import com.google.android.gms.cast.framework.media.uicontroller.UIController;
 import com.google.android.gms.cast.framework.media.widget.ExpandedControllerActivity;
 import com.redbeemedia.enigma.referenceapp.R;
 

@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.google.android.gms.cast.framework.CastContext;
 import com.redbeemedia.enigma.cast.manager.EnigmaCastManager;
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.player.timeline.ITimelinePosition;
@@ -38,7 +38,6 @@ import com.redbeemedia.enigma.referenceapp.session.SessionContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.google.android.gms.cast.framework.CastContext;
 
 public class ListAssetsActivity extends AppCompatActivity {
     private MutableLiveData<List<IAsset>> assets = new MutableLiveData<>();

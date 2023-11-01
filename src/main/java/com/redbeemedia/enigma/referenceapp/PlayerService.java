@@ -116,7 +116,6 @@ public class PlayerService extends Service {
         return Service.START_STICKY;
     }
 
-
     private void stopForegroundService() {
         Log.d(TAG, "******* Stopping foreground service ********");
         // Stop foreground service and remove the notification.
@@ -134,9 +133,9 @@ public class PlayerService extends Service {
 
     @Override
     public void onDestroy() {
-        enigmaPlayer.getControls().stop();
-        enigmaPlayer.release();
-        isRunning.set(false);
+        //enigmaPlayer.getControls().stop();
+        //enigmaPlayer.release();
+        //isRunning.set(false);
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

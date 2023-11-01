@@ -15,9 +15,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.emsg.EventMessage;
-import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist;
+
 import com.redbeemedia.enigma.core.error.EnigmaError;
 import com.redbeemedia.enigma.core.player.IEnigmaPlayer;
 import com.redbeemedia.enigma.core.player.controls.IControlResultHandler;
@@ -141,8 +139,15 @@ public class TimelineView extends View {
 
             @Override
             public void onCurrentPositionChanged(ITimelinePosition timelinePosition) {
+                System.out.println("****** Events areha na");
                 TimelineView.this.pos = timelinePosition;
                 recalculatePos();
+            }
+
+            @Override
+            public void onLivePositionChanged(ITimelinePosition timelinePosition) {
+                TimelineView.this.pos = timelinePosition;
+                //recalculatePos();
             }
 
             @Override
@@ -152,24 +157,7 @@ public class TimelineView extends View {
                 recalculatePos();
             }
 
-            @Override
-            public void onDashMetadata(Metadata metadata) {
-                // handle meta data event
-                for (int i = 0; i < metadata.length(); i++) {
-                    Metadata.Entry entry = metadata.get(i);
 
-                }
-            }
-
-            @Override
-            public void onHlsMetadata(HlsMediaPlaylist metadata) {
-                for (String tag : metadata.tags) {
-                    if (tag.toLowerCase(Locale.ROOT).contains("X-COM-DAICONNECT-TRACK".toLowerCase(Locale.ROOT))) {
-                        // We only interested in DAICONNECT-TRACK
-                        Log.d("Metadata-Stream", tag);
-                    }
-                }
-            }
         }, handler);
     }
 
