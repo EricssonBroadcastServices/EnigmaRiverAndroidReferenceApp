@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_base_url"
-            android:text=""
+            android:text="https://exposure.api.redbee.live"
             android:inputType="textAutoComplete"
             android:padding="@dimen/padding_small" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_username"
-            android:text=""
+            android:text="ramanjot.kaur@eyevinn.se"
 
             android:inputType="textEmailAddress|textAutoComplete"
             android:padding="@dimen/padding_small" />

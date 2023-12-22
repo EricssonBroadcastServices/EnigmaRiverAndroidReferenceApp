@@ -34,7 +34,6 @@ public class CustomControlsView extends ConstraintLayout {
     }
 
     public CustomControlsView(Context context, AttributeSet attrs) {
-
         super(context, attrs);
         init();
     }
@@ -53,10 +52,6 @@ public class CustomControlsView extends ConstraintLayout {
             isHidden = !isHidden;
             CustomControlsView.this.setAlpha(isHidden ? 0f : 1f);
         });
-    }
-
-    public View getPipButton() {
-        return findViewById(R.id.pip);
     }
 
     @Override

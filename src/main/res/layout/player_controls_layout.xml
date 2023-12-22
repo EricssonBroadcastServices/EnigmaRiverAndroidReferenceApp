@@ -74,19 +74,5 @@
         app:layout_constraintBottom_toTopOf="@+id/timelineView"
         app:layout_constraintLeft_toRightOf="@id/seek_forward_button"
          />
-    <TextView
-        android:id="@+id/pip"
-        android:clickable="true"
-        android:text="PIP"
-        android:textSize="25dp"
-        android:gravity="center"
-        android:background="@color/colorWhite"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="8dp"
-        android:src="@android:drawable/picture_frame"
-        app:layout_constraintBottom_toTopOf="@+id/timelineView"
-        app:layout_constraintLeft_toRightOf="@id/next_program"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

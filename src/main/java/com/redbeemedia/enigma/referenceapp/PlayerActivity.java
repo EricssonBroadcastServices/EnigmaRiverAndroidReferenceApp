@@ -48,13 +48,6 @@ public class PlayerActivity extends AppCompatActivity {
     private IAsset asset;
     private boolean startedAtLeastOnce = false;
 
-    public void enterPip() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // prefereably add pip params here.
-            this.enterPictureInPictureMode();
-        }
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +93,6 @@ public class PlayerActivity extends AppCompatActivity {
 
         CustomControlsView customControlsView = findViewById(R.id.player_controls);
         customControlsView.connectTo(enigmaPlayer);
-        customControlsView.getPipButton().setOnClickListener(v -> this.enterPip());
     }
 
     private void startStream() {
@@ -120,13 +112,7 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if(this.isInPictureInPictureMode()) {
-                enigmaPlayer.getControls().start();
-            }
-        } else {
-            enigmaPlayer.getControls().pause();
-        }
+        enigmaPlayer.getControls().pause();
     }
 
     @Override

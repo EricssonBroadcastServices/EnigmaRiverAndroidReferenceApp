@@ -139,6 +139,7 @@ public class TimelineView extends View {
 
             @Override
             public void onCurrentPositionChanged(ITimelinePosition timelinePosition) {
+                System.out.println("****** Events areha na");
                 TimelineView.this.pos = timelinePosition;
                 recalculatePos();
             }
