@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onError(EnigmaError error) {
+            error.toString();
             LoginActivity activity = activityReference.get();
             if (activity != null) {
                 activity.onLoginError(error);

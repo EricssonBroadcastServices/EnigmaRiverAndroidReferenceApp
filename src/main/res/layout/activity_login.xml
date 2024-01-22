@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_username"
-            android:text="ramanjot.kaur@eyevinn.se"
+            android:text=""
 
             android:inputType="textEmailAddress|textAutoComplete"
             android:padding="@dimen/padding_small" />

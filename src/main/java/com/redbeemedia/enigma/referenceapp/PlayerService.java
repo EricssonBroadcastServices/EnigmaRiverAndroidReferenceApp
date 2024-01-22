@@ -52,11 +52,11 @@ public class PlayerService extends Service {
         return isRunning.get();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
-        String CHANNEL_ID = createNotificationChannel(PlayerService.CHANNEL_ID, "Player");
-        if (Build.VERSION.SDK_INT >= 29) {
+        String CHANNEL_ID = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CHANNEL_ID = createNotificationChannel(PlayerService.CHANNEL_ID, "Player");
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Player notification", NotificationManager.IMPORTANCE_DEFAULT);
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
