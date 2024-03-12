@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.redbeemedia.enigma.core.context.EnigmaRiverContext;
 import com.redbeemedia.enigma.core.playable.AssetPlayable;
 import com.redbeemedia.enigma.core.playable.IPlayable;
 import com.redbeemedia.enigma.exposureutils.models.asset.ApiAsset;
@@ -60,7 +63,17 @@ public class Asset implements IAsset {
             if(image != null) {
                 String imageUrl = image.getUrl();
                 if(imageUrl != null) {
-                    Glide.with(target).load(imageUrl).into(target);
+                    GlideUrl glideUrl = new GlideUrl(
+                        imageUrl,
+                        new LazyHeaders.Builder().addHeader(
+                            "User-Agent",
+                            EnigmaRiverContext.getAppName()
+                                + "/"
+                                + EnigmaRiverContext.getAppVersion()
+                                + " "
+                                + System.getProperty("http.agent")
+                    ).build());
+                    Glide.with(target).load(glideUrl).into(target);
                     foundImage = true;
                 }
             }
