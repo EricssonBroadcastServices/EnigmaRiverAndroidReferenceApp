@@ -46,6 +46,11 @@ public class Asset implements IAsset {
     }
 
     @Override
+    public String getAssetId() {
+        return apiAsset.getAssetId();
+    }
+
+    @Override
     public IPlayable getPlayable() {
         return playable;
     }

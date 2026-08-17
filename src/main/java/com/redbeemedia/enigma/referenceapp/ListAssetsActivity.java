@@ -44,13 +44,22 @@ public class ListAssetsActivity extends AppCompatActivity {
     private Duration CONTROL_INCREMENT = Duration.seconds(10);
     private CastContext mCastContext;
 
-
     // for cast
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.top_menu, menu);
         CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_bitmovin_player) {
+            startActivity(new android.content.Intent(this, BitmovinPlayerActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -75,7 +84,6 @@ public class ListAssetsActivity extends AppCompatActivity {
         setupStickyPlayerButtons();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -93,7 +101,6 @@ public class ListAssetsActivity extends AppCompatActivity {
     }
 
     private void setupStickyPlayerButtons() {
-
 
         Button playButton = findViewById(R.id.stickyPlayButton);
         playButton.setOnClickListener(v -> {
@@ -146,7 +153,7 @@ public class ListAssetsActivity extends AppCompatActivity {
             ExposureUtil.getReferenceAppAssets(session, new BaseExposureResultHandler<List<IAsset>>() {
                 @Override
                 public void onSuccess(List<IAsset> result) {
-                   assets.postValue(result);
+                    assets.postValue(result);
                 }
 
                 @Override
@@ -161,7 +168,8 @@ public class ListAssetsActivity extends AppCompatActivity {
         private final IActivityConnector<? extends Activity> activityConnector;
         private List<IAsset> currentAssetList = new ArrayList<>();
 
-        public AssetListAdapter(LifecycleOwner lifecycleOwner, LiveData<List<IAsset>> assets, IActivityConnector<? extends Activity> activityConnector) {
+        public AssetListAdapter(LifecycleOwner lifecycleOwner, LiveData<List<IAsset>> assets,
+                IActivityConnector<? extends Activity> activityConnector) {
             this.activityConnector = activityConnector;
             this.currentAssetList = assets.getValue();
             assets.observe(lifecycleOwner, newAssets -> {
@@ -183,6 +191,12 @@ public class ListAssetsActivity extends AppCompatActivity {
                     activityConnector.perform(activity -> {
                         activity.startActivity(PlayerActivity.getStartIntent(activity, asset));
                     });
+                });
+                button.setOnLongClickListener(v -> {
+                    activityConnector.perform(activity -> {
+                        activity.startActivity(BitmovinPlayerActivity.getStartIntent(activity, asset));
+                    });
+                    return true;
                 });
                 asset.loadImage(button);
             }

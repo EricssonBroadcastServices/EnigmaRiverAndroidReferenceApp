@@ -58,6 +58,71 @@ public class PlayerActivity extends AppCompatActivity {
         exoPlayerTech.attachView(findViewById(R.id.player_view));
         exoPlayerTech.hideController();
 
+        try {
+            java.lang.reflect.Field drmSessionManagerField = exoPlayerTech.getClass()
+                    .getDeclaredField("drmSessionManager");
+            drmSessionManagerField.setAccessible(true);
+            Object enigmaDrmSessionManager = drmSessionManagerField.get(exoPlayerTech);
+
+            if (enigmaDrmSessionManager != null) {
+                java.lang.reflect.Field mediaDrmCallbackField = exoPlayerTech.getClass()
+                        .getDeclaredField("mediaDrmCallback");
+                mediaDrmCallbackField.setAccessible(true);
+                com.google.android.exoplayer2.drm.MediaDrmCallback mediaDrmCallback = (com.google.android.exoplayer2.drm.MediaDrmCallback) mediaDrmCallbackField
+                        .get(exoPlayerTech);
+
+                java.lang.reflect.Field mediaDrmField = exoPlayerTech.getClass().getDeclaredField("mediaDrm");
+                mediaDrmField.setAccessible(true);
+                com.google.android.exoplayer2.drm.ExoMediaDrm reusableExoMediaDrm = (com.google.android.exoplayer2.drm.ExoMediaDrm) mediaDrmField
+                        .get(exoPlayerTech);
+
+                com.google.android.exoplayer2.drm.ExoMediaDrm.Provider mediaDrmProvider = new com.google.android.exoplayer2.drm.ExoMediaDrm.AppManagedProvider(
+                        reusableExoMediaDrm);
+
+                com.google.android.exoplayer2.drm.DefaultDrmSessionManager newSessionManager = new com.google.android.exoplayer2.drm.DefaultDrmSessionManager.Builder()
+                        .setUuidAndExoMediaDrmProvider(com.google.android.exoplayer2.C.WIDEVINE_UUID, mediaDrmProvider)
+                        .setMultiSession(true)
+                        .build(mediaDrmCallback);
+
+                java.lang.reflect.Field normalSessionManagerField = enigmaDrmSessionManager.getClass()
+                        .getDeclaredField("normalSessionManager");
+                normalSessionManagerField.setAccessible(true);
+                normalSessionManagerField.set(enigmaDrmSessionManager, newSessionManager);
+
+                java.lang.reflect.Field activeSessionManagerField = enigmaDrmSessionManager.getClass()
+                        .getDeclaredField("activeSessionManager");
+                activeSessionManagerField.setAccessible(true);
+                Object activeSessionManager = activeSessionManagerField.get(enigmaDrmSessionManager);
+
+                java.lang.reflect.Field valueField = activeSessionManager.getClass().getDeclaredField("value");
+                valueField.setAccessible(true);
+                valueField.set(activeSessionManager, newSessionManager);
+
+                Class<?> factoryInterface = Class.forName(
+                        "com.redbeemedia.enigma.exoplayerintegration.EnigmaDrmSessionManager$IDrmSessionManagerFactory");
+                Object newFactory = java.lang.reflect.Proxy.newProxyInstance(
+                        getClassLoader(),
+                        new Class<?>[] { factoryInterface },
+                        (proxy, method, args) -> {
+                            if (method.getName().equals("newDrmSessionManager")) {
+                                return new com.google.android.exoplayer2.drm.DefaultDrmSessionManager.Builder()
+                                        .setUuidAndExoMediaDrmProvider(com.google.android.exoplayer2.C.WIDEVINE_UUID,
+                                                mediaDrmProvider)
+                                        .setMultiSession(true)
+                                        .build(mediaDrmCallback);
+                            }
+                            return null;
+                        });
+
+                java.lang.reflect.Field sessionManagerFactoryField = enigmaDrmSessionManager.getClass()
+                        .getDeclaredField("sessionManagerFactory");
+                sessionManagerFactoryField.setAccessible(true);
+                sessionManagerFactoryField.set(enigmaDrmSessionManager, newFactory);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         final ISession session = SessionContainer.getSession().getValue();
         if (session == null) {
             Toast.makeText(this, getString(R.string.session_not_found), Toast.LENGTH_LONG).show();
@@ -83,7 +148,8 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(EnigmaPlayerState from, EnigmaPlayerState to) {
                 if (to == EnigmaPlayerState.PLAYING) {
-                    ((EnigmaRiverReferenceApp) getApplication()).setStickyPlayer(enigmaPlayer.isCurrentStreamTypeAudioOnly());
+                    ((EnigmaRiverReferenceApp) getApplication())
+                            .setStickyPlayer(enigmaPlayer.isCurrentStreamTypeAudioOnly());
                 }
             }
         });
@@ -97,7 +163,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void startStream() {
         PlaybackProperties playbackProperties = new PlaybackProperties();
-        playbackProperties.setPlayFrom(startedAtLeastOnce ? IPlaybackProperties.PlayFrom.BOOKMARK : IPlaybackProperties.PlayFrom.PLAYER_DEFAULT);
+        playbackProperties.setPlayFrom(startedAtLeastOnce ? IPlaybackProperties.PlayFrom.BOOKMARK
+                : IPlaybackProperties.PlayFrom.PLAYER_DEFAULT);
 
         // Stop the sticky player if it is already running
         if (PlayerService.isRunning()) {
@@ -106,7 +173,8 @@ public class PlayerActivity extends AppCompatActivity {
             startService(stopIntent);
         }
 
-        enigmaPlayer.play(new PlayRequest(asset.getPlayable(), playbackProperties, new PlayRequestResultHandler(new ActivityConnector<>(this))));
+        enigmaPlayer.play(new PlayRequest(asset.getPlayable(), playbackProperties,
+                new PlayRequestResultHandler(new ActivityConnector<>(this))));
     }
 
     @Override
@@ -127,7 +195,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void onPlayRequestError(EnigmaError error) {
         String errorMessage = getErrorForUser(error);
-        //Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
         error.printStackTrace();
         System.out.println(errorMessage);
     }

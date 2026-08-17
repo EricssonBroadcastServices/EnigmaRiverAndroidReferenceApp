@@ -39,6 +39,9 @@
             android:theme="@style/AppTheme.Player" />
         <activity android:name=".ListAssetsActivity"
             android:screenOrientation="sensorPortrait" />
+        <activity android:name=".BitmovinPlayerActivity"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
             android:name="com.redbeemedia.enigma.referenceapp.cast.ExpandedControlActivity"
             android:exported="true"
@@ -57,7 +60,7 @@
             android:exported="false">
         </service>
 
-
+        <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="MOCK" />
     </application>
 
 </manifest>
